@@ -52,6 +52,7 @@ class DagonSkill(CommonPlaySkill):
 
     def clean_vocs(self, phrase):
         phrase = self.remove_voc(phrase, "reading")
+        phrase = self.remove_voc(phrase, "video")
         phrase = self.remove_voc(phrase, "lovecraft")
         phrase = self.remove_voc(phrase, "audio_theatre")
         phrase = self.remove_voc(phrase, "play")
@@ -64,12 +65,20 @@ class DagonSkill(CommonPlaySkill):
         match = None
         score = 0
 
+        if self.voc_match(original, "reading"):
+            score += 0.1
+            match = CPSMatchLevel.GENERIC
+
         if self.voc_match(original, "audio_theatre"):
             score += 0.15
             match = CPSMatchLevel.CATEGORY
 
+        if self.voc_match(original, "video"):
+            score += 0.2
+            match = CPSMatchLevel.CATEGORY
+
         if self.voc_match(original, "lovecraft"):
-            score += 0.5
+            score += 0.55
             match = CPSMatchLevel.ARTIST
 
         phrase = self.clean_vocs(phrase)
