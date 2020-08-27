@@ -117,16 +117,6 @@ class DagonSkill(CommonPlaySkill):
 
     # youtube handling
     @staticmethod
-    def convert_to_mp3(path, mp3_filename):
-        """
-        Converts a input file to mp3
-        command: ffmpeg -n -i input.m4a -acodec libmp3lame -ab 128k output.mp3
-        """
-        command = ["ffmpeg", "-n", "-i", path, "-acodec", "libmp3lame",
-                   "-ab", "128k", mp3_filename]
-        subprocess.call(command)
-
-    @staticmethod
     def get_audio_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
         myvid = pafy.new(url)
