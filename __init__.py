@@ -25,10 +25,13 @@ class DagonSkill(CommonPlaySkill):
     def initialize(self):
         self.add_event('skill-dagon.jarbasskills.home',
                        self.handle_homescreen)
-        if self.settings["download_audio"]:
-            self.get_audio_stream(download=True)
-        if self.settings["download_video"]:
-            self.get_video_stream(download=True)
+        try:
+            if self.settings["download_audio"]:
+                self.get_audio_stream(download=True)
+            if self.settings["download_video"]:
+                self.get_video_stream(download=True)
+        except:
+            pass
 
     def get_intro_message(self):
         self.speak_dialog("intro")
@@ -114,7 +117,9 @@ class DagonSkill(CommonPlaySkill):
     def CPS_start(self, phrase, data):
         bg = join(dirname(__file__), "ui", "bg.png")
         image = join(dirname(__file__), "ui", "logo.png")
+
         url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
+
         if self.gui.connected and not self.settings["audio_only"]:
             url = self.get_video_stream(url, self.settings["download_video"])
             self.CPS_send_status(uri=url,
@@ -122,11 +127,7 @@ class DagonSkill(CommonPlaySkill):
                                  background_image=bg,
                                  playlist_position=0,
                                  status=CPSTrackStatus.PLAYING_GUI)
-            self.gui["status"] = str("play")
-            self.gui["video"] = url
-            self.gui["videoThumb"] = bg
-            self.gui["videoTitle"] = "Dagon , by H. P. Lovecraft"
-            self.gui.show_page("VideoPlayer.qml", override_idle=True)
+            self.gui.play_video(url, "Dagon , by H. P. Lovecraft")
         else:
             url = self.get_audio_stream(url, self.settings["download_audio"])
             self.audioservice.play(url, utterance=self.play_service_string)
@@ -135,9 +136,6 @@ class DagonSkill(CommonPlaySkill):
                                  background_image=bg,
                                  playlist_position=0,
                                  status=CPSTrackStatus.PLAYING_AUDIOSERVICE)
-
-    def stop(self):
-        self.gui.clear()
 
     # youtube handling
     @staticmethod
