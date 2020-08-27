@@ -1,4 +1,4 @@
-from mycroft.skills.common_play_skill import CommonPlaySkill,\
+from mycroft.skills.common_play_skill import CommonPlaySkill, \
     CPSMatchLevel, CPSTrackStatus
 import pafy
 from tempfile import gettempdir
@@ -23,7 +23,7 @@ class DagonSkill(CommonPlaySkill):
                        self.handle_homescreen)
         if self.settings["download_audio"]:
             self.get_audio_stream(download=True)
-        #if self.settings["download_video"]:
+        # if self.settings["download_video"]:
         #    self.get_video_stream(download=True)
 
     def get_intro_message(self):
@@ -91,7 +91,10 @@ class DagonSkill(CommonPlaySkill):
         image = join(dirname(__file__), "ui", "logo.png")
         url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
 
-        if self.gui.connected and not self.settings["audio_only"]:
+        has_gui = self.config_core["enclosure"].get("platform", "") == \
+                  "mycroft_mark_2"
+        
+        if has_gui and not self.settings["audio_only"]:
             url = self.get_video_stream(url, self.settings["download_video"])
             self.CPS_send_status(uri=url,
                                  image=image,
