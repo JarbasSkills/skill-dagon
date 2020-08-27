@@ -23,8 +23,8 @@ class DagonSkill(CommonPlaySkill):
                        self.handle_homescreen)
         if self.settings["download_audio"]:
             self.get_audio_stream(download=True)
-        # if self.settings["download_video"]:
-        #    self.get_video_stream(download=True)
+        if self.settings["download_video"]:
+            self.get_video_stream(download=True)
 
     def get_intro_message(self):
         self.speak_dialog("intro")
@@ -53,7 +53,6 @@ class DagonSkill(CommonPlaySkill):
     def clean_vocs(self, phrase):
         phrase = self.remove_voc(phrase, "reading")
         phrase = self.remove_voc(phrase, "video")
-        phrase = self.remove_voc(phrase, "lovecraft")
         phrase = self.remove_voc(phrase, "audio_theatre")
         phrase = self.remove_voc(phrase, "play")
         phrase = phrase.strip()
@@ -70,24 +69,30 @@ class DagonSkill(CommonPlaySkill):
             match = CPSMatchLevel.GENERIC
 
         if self.voc_match(original, "audio_theatre"):
-            score += 0.15
+            score += 0.1
             match = CPSMatchLevel.CATEGORY
 
         if self.voc_match(original, "video"):
-            score += 0.2
+            score += 0.1
             match = CPSMatchLevel.CATEGORY
-
-        if self.voc_match(original, "lovecraft"):
-            score += 0.55
-            match = CPSMatchLevel.ARTIST
 
         phrase = self.clean_vocs(phrase)
 
+        if self.voc_match(phrase, "lovecraft"):
+            score += 0.3
+            match = CPSMatchLevel.ARTIST
+            if self.voc_match(original, "video"):
+                score += 0.1
+                match = CPSMatchLevel.MULTI_KEY
+
         if self.voc_match(phrase, "dagon"):
             score += 0.75
-            match = CPSMatchLevel.TITLE
+            if match is not None:
+                match = CPSMatchLevel.MULTI_KEY
+            else:
+                match = CPSMatchLevel.TITLE
 
-        if score >= 0.85:
+        if score >= 0.9:
             match = CPSMatchLevel.EXACT
 
         if match is not None:
@@ -131,8 +136,7 @@ class DagonSkill(CommonPlaySkill):
     @staticmethod
     def get_audio_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
-        myvid = pafy.new(url)
-        stream = myvid.getbestaudio()
+        stream = pafy.new(url).getbestaudio()
 
         # TODO check if https supported, if not download=True without
         #  needing user changing settings.json
@@ -157,11 +161,14 @@ class DagonSkill(CommonPlaySkill):
     @staticmethod
     def get_video_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
-        video = pafy.new(url)
-        playstream = video.streams[0]
-        # TODO dl video ?
-        # not worth caching
-        return playstream.url
+        stream = pafy.new(url).streams[0]
+        if download:
+            path = join(gettempdir(),
+                        url.split("watch?v=")[-1] + "." + stream.extension)
+            if not exists(path):
+                stream.download(path)
+            return path
+        return stream.url
 
 
 def create_skill():
