@@ -1,5 +1,5 @@
-from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel, \
-    CPSMatchType, CPSTrackStatus
+from mycroft.skills.common_play_skill import CommonPlaySkill,\
+    CPSMatchLevel, CPSTrackStatus
 import pafy
 from tempfile import gettempdir
 import re
@@ -18,10 +18,6 @@ class DagonSkill(CommonPlaySkill):
         if "audio_only" not in self.settings:
             self.settings["audio_only"] = False
 
-        self.supported_media = [CPSMatchType.GENERIC,
-                                CPSMatchType.AUDIOBOOK,
-                                CPSMatchType.VIDEO]
-
     def initialize(self):
         self.add_event('skill-dagon.jarbasskills.home',
                        self.handle_homescreen)
@@ -36,7 +32,7 @@ class DagonSkill(CommonPlaySkill):
 
     # homescreen
     def handle_homescreen(self, message):
-        self.CPS_start("dagon", {"media_type": CPSMatchType.VIDEO})
+        self.CPS_start("dagon", {})
 
     # common play
     def remove_voc(self, utt, voc_filename, lang=None):
@@ -62,18 +58,11 @@ class DagonSkill(CommonPlaySkill):
         phrase = phrase.strip()
         return phrase
 
-    def CPS_match_query_phrase(self, phrase, media_type):
+    def CPS_match_query_phrase(self, phrase):
 
         original = phrase
         match = None
         score = 0
-
-        if media_type == CPSMatchType.AUDIOBOOK:
-            score += 0.1
-            match = CPSMatchLevel.GENERIC
-        elif media_type == CPSMatchType.VIDEO:
-            score += 0.2
-            match = CPSMatchLevel.GENERIC
 
         if self.voc_match(original, "audio_theatre"):
             score += 0.15
@@ -94,7 +83,7 @@ class DagonSkill(CommonPlaySkill):
 
         if match is not None:
             return (phrase, match,
-                    {"media_type": media_type, "query": original})
+                    {"query": original})
         return None
 
     def CPS_start(self, phrase, data):
