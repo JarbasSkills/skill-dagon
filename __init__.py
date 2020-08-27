@@ -11,8 +11,10 @@ class DagonSkill(CommonPlaySkill):
 
     def __init__(self):
         super().__init__("Dagon")
-        if "download" not in self.settings:
-            self.settings["download"] = True
+        if "download_audio" not in self.settings:
+            self.settings["download_audio"] = True
+        if "download_video" not in self.settings:
+            self.settings["download_video"] = False
         if "audio_only" not in self.settings:
             self.settings["audio_only"] = False
 
@@ -23,8 +25,10 @@ class DagonSkill(CommonPlaySkill):
     def initialize(self):
         self.add_event('skill-dagon.jarbasskills.home',
                        self.handle_homescreen)
-        if self.settings["download"]:
+        if self.settings["download_audio"]:
             self.get_audio_stream(download=True)
+        # if self.settings["download_video"]:
+        #    self.get_video_stream(download=True)
 
     def get_intro_message(self):
         self.speak_dialog("intro")
@@ -98,7 +102,7 @@ class DagonSkill(CommonPlaySkill):
         image = join(dirname(__file__), "ui", "logo.png")
         url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
         if self.gui.connected and not self.settings["audio_only"]:
-            url = self.get_video_stream(url)
+            url = self.get_video_stream(url, self.settings["download_video"])
             self.CPS_send_status(uri=url,
                                  image=image,
                                  background_image=bg,
@@ -110,7 +114,7 @@ class DagonSkill(CommonPlaySkill):
             self.gui["videoTitle"] = "Dagon , by H. P. Lovecraft"
             self.gui.show_page("VideoPlayer.qml", override_idle=True)
         else:
-            url = self.get_audio_stream(url, self.settings["download"])
+            url = self.get_audio_stream(url, self.settings["download_audio"])
             self.audioservice.play(url, utterance=self.play_service_string)
             self.CPS_send_status(uri=url,
                                  image=image,
@@ -123,28 +127,13 @@ class DagonSkill(CommonPlaySkill):
 
     # youtube handling
     @staticmethod
-    def convert_to_mp3(path, mp3_filename):
-        """
-        Converts a input file to mp3
-        command: ffmpeg -n -i input.m4a -acodec libmp3lame -ab 128k output.mp3
-        """
-
-        codec = "libmp3lame"
-
-        command = ["ffmpeg",
-                   "-n",
-                   "-i", path,
-                   "-acodec", codec,
-                   "-ab", "128k",
-                   mp3_filename
-                   ]
-        subprocess.call(command)
-
-    @staticmethod
     def get_audio_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
         myvid = pafy.new(url)
         stream = myvid.getbestaudio()
+
+        # TODO check if https supported, if not download=True without
+        #  needing user changing settings.json
         if download:
             path = join(gettempdir(),
                         url.split("watch?v=")[-1] + "." + stream.extension)
@@ -154,15 +143,22 @@ class DagonSkill(CommonPlaySkill):
                 stream.download(path)
 
             if not exists(mp3):
-                DagonSkill.convert_to_mp3(path, mp3)
+                # convert file to allow playback with simple audio backend
+                command = ["ffmpeg", "-n", "-i", path, "-acodec",
+                           "libmp3lame",
+                           "-ab", "128k", mp3]
+                subprocess.call(command)
 
             return mp3
         return stream.url
 
     @staticmethod
-    def get_video_stream(url):
+    def get_video_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
+                         download=False):
         video = pafy.new(url)
         playstream = video.streams[0]
+        # TODO dl video ?
+        # not worth caching
         return playstream.url
 
 
