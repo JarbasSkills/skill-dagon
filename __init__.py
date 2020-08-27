@@ -92,12 +92,18 @@ class DagonSkill(CommonPlaySkill):
         if self.voc_match(phrase, "lovecraft"):
             score += 0.3
             match = CPSMatchLevel.ARTIST
+            if self.voc_match(original, "video"):
+                score += 0.1
+                match = CPSMatchLevel.MULTI_KEY
 
         if self.voc_match(phrase, "dagon"):
             score += 0.75
-            match = CPSMatchLevel.TITLE
+            if match is not None:
+                match = CPSMatchLevel.MULTI_KEY
+            else:
+                match = CPSMatchLevel.TITLE
 
-        if score >= 0.85:
+        if score >= 0.9:
             match = CPSMatchLevel.EXACT
 
         if match is not None:
