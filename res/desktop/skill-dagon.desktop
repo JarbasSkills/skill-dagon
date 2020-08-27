@@ -1,0 +1,10 @@
+[Desktop Entry]
+Terminal=false
+Type=Application
+Name=Dagon, A Lovecraft Story Skill
+Exec=mycroft-gui-app --hideTextInput --skill=skill-dagon.jarbasskills.home
+Icon=icon.png
+Categories=VoiceApp
+StartupNotify=false
+X-DBUS-StartupType=None
+X-KDE-StartupNotify=false
