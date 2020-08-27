@@ -23,7 +23,7 @@ class DagonSkill(CommonPlaySkill):
                        self.handle_homescreen)
         if self.settings["download_audio"]:
             self.get_audio_stream(download=True)
-        # if self.settings["download_video"]:
+        #if self.settings["download_video"]:
         #    self.get_video_stream(download=True)
 
     def get_intro_message(self):
@@ -90,6 +90,7 @@ class DagonSkill(CommonPlaySkill):
         bg = join(dirname(__file__), "ui", "bg.png")
         image = join(dirname(__file__), "ui", "logo.png")
         url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
+
         if self.gui.connected and not self.settings["audio_only"]:
             url = self.get_video_stream(url, self.settings["download_video"])
             self.CPS_send_status(uri=url,
@@ -115,6 +116,16 @@ class DagonSkill(CommonPlaySkill):
         self.gui.clear()
 
     # youtube handling
+    @staticmethod
+    def convert_to_mp3(path, mp3_filename):
+        """
+        Converts a input file to mp3
+        command: ffmpeg -n -i input.m4a -acodec libmp3lame -ab 128k output.mp3
+        """
+        command = ["ffmpeg", "-n", "-i", path, "-acodec", "libmp3lame",
+                   "-ab", "128k", mp3_filename]
+        subprocess.call(command)
+
     @staticmethod
     def get_audio_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
