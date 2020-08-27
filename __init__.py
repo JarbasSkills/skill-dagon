@@ -12,7 +12,7 @@ class DagonSkill(CommonPlaySkill):
     def __init__(self):
         super().__init__("Dagon")
         if "download_audio" not in self.settings:
-            self.settings["download_audio"] = True
+            self.settings["download_audio"] = False
         if "download_video" not in self.settings:
             self.settings["download_video"] = False
         if "audio_only" not in self.settings:
@@ -27,8 +27,8 @@ class DagonSkill(CommonPlaySkill):
                        self.handle_homescreen)
         if self.settings["download_audio"]:
             self.get_audio_stream(download=True)
-        # if self.settings["download_video"]:
-        #    self.get_video_stream(download=True)
+        if self.settings["download_video"]:
+            self.get_video_stream(download=True)
 
     def get_intro_message(self):
         self.speak_dialog("intro")
@@ -129,8 +129,7 @@ class DagonSkill(CommonPlaySkill):
     @staticmethod
     def get_audio_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
-        myvid = pafy.new(url)
-        stream = myvid.getbestaudio()
+        stream = pafy.new(url).getbestaudio()
 
         # TODO check if https supported, if not download=True without
         #  needing user changing settings.json
@@ -155,11 +154,14 @@ class DagonSkill(CommonPlaySkill):
     @staticmethod
     def get_video_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                          download=False):
-        video = pafy.new(url)
-        playstream = video.streams[0]
-        # TODO dl video ?
-        # not worth caching
-        return playstream.url
+        stream = pafy.new(url).streams[0]
+        if download:
+            path = join(gettempdir(),
+                        url.split("watch?v=")[-1] + "." + stream.extension)
+            if not exists(path):
+                stream.download(path)
+            return path
+        return stream.url
 
 
 def create_skill():
