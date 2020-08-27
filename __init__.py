@@ -28,7 +28,7 @@ class DagonSkill(CommonPlaySkill):
 
     def get_intro_message(self):
         self.speak_dialog("intro")
-        self.gui.show_image(join(dirname(__file__), "ui", "bg.png"))
+        self.gui.show_image(join(dirname(__file__), "ui", "dagon.png"))
 
     # homescreen
     def handle_homescreen(self, message):
