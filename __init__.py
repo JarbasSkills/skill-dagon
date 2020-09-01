@@ -122,11 +122,7 @@ class DagonSkill(CommonPlaySkill):
                                  background_image=bg,
                                  playlist_position=0,
                                  status=CPSTrackStatus.PLAYING_GUI)
-            self.gui["status"] = str("play")
-            self.gui["video"] = url
-            self.gui["videoThumb"] = bg
-            self.gui["videoTitle"] = "Dagon , by H. P. Lovecraft"
-            self.gui.show_page("VideoPlayer.qml", override_idle=True)
+            self.gui.play_video(url, "Dagon , by H. P. Lovecraft")
         else:
             url = self.get_audio_stream(url, self.settings["download_audio"])
             self.audioservice.play(url, utterance=self.play_service_string)
