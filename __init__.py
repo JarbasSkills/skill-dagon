@@ -20,7 +20,8 @@ class DagonSkill(CommonPlaySkill):
 
         self.supported_media = [CPSMatchType.GENERIC,
                                 CPSMatchType.AUDIOBOOK,
-                                CPSMatchType.VIDEO]
+                                CPSMatchType.VIDEO,
+                                CPSMatchType.MOVIE]
 
     def initialize(self):
         self.add_event('skill-dagon.jarbasskills.home',
@@ -74,6 +75,9 @@ class DagonSkill(CommonPlaySkill):
         elif media_type == CPSMatchType.VIDEO:
             score += 0.15
             match = CPSMatchLevel.GENERIC
+        elif media_type == CPSMatchType.MOVIE:
+            match = CPSMatchLevel.GENERIC
+            score -= 0.1
 
         if self.voc_match(original, "reading"):
             score += 0.1
