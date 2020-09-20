@@ -20,6 +20,7 @@ class DagonSkill(CommonPlaySkill):
 
         self.supported_media = [CPSMatchType.GENERIC,
                                 CPSMatchType.AUDIOBOOK,
+                                CPSMatchType.VISUAL_STORY,
                                 CPSMatchType.VIDEO]
 
     def initialize(self):
@@ -74,6 +75,9 @@ class DagonSkill(CommonPlaySkill):
         elif media_type == CPSMatchType.VIDEO:
             score += 0.2
             match = CPSMatchLevel.GENERIC
+        elif media_type == CPSMatchType.VISUAL_STORY:
+            score += 0.3
+            match = CPSMatchLevel.CATEGORY
 
         if self.voc_match(original, "audio_theatre"):
             score += 0.15
