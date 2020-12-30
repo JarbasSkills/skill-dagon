@@ -1,4 +1,4 @@
-# <img src='./res/icon/icon.png' card_color='#40DBB0' width='50' height='50' style='vertical-align:bottom'/> Dagon, A Lovecraft Story Skill 
+# <img src='./res/icon/dagon.png' card_color='#40DBB0' width='50' height='50' style='vertical-align:bottom'/> Dagon, A Lovecraft Story Skill 
 
 Adaption of Dagon, by H. P. Lovecraft
 

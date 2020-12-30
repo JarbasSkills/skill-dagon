@@ -4,8 +4,8 @@
   "authorname": "JarbasSkills",
   "foldername": "",
   "url": "https://github.com/JarbasSkills/skill-dagon",
-  "branch": "v0.2",
-  "desktopFile": false,
+  "branch": "v0.2.1",
+  "desktopFile": true,
   "warning": "",
   "systemDeps": false,
   "platforms": [
