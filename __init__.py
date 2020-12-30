@@ -1,5 +1,5 @@
-from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel, \
-    CPSMatchType, CPSTrackStatus
+from ovos_utils.waiting_for_mycroft.common_play import \
+    CommonPlaySkill, CPSMatchLevel, CPSMatchType, CPSTrackStatus
 import pafy
 from tempfile import gettempdir
 import re
@@ -107,16 +107,7 @@ class DagonSkill(CommonPlaySkill):
         url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
         if self.gui.connected and not self.settings["audio_only"]:
             url = self.get_video_stream(url, self.settings["download_video"])
-            self.CPS_send_status(uri=url,
-                                 image=image,
-                                 background_image=bg,
-                                 playlist_position=0,
-                                 status=CPSTrackStatus.PLAYING_GUI)
-            self.gui["status"] = str("play")
-            self.gui["video"] = url
-            self.gui["videoThumb"] = bg
-            self.gui["videoTitle"] = "Dagon , by H. P. Lovecraft"
-            self.gui.show_page("VideoPlayer.qml", override_idle=True)
+            self.gui.play_video(url)
         else:
             url = self.get_audio_stream(url, self.settings["download_audio"])
             self.audioservice.play(url, utterance=self.play_service_string)
