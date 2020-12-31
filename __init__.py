@@ -1,10 +1,9 @@
 from ovos_utils.waiting_for_mycroft.common_play import \
     CommonPlaySkill, CPSMatchLevel, CPSMatchType, CPSTrackStatus
-import pafy
-from tempfile import gettempdir
+from ovos_utils import create_daemon
+from pyvod.utils import get_audio_stream, get_video_stream
 import re
-import subprocess
-from os.path import join, dirname, exists
+from os.path import join, dirname
 
 
 class DagonSkill(CommonPlaySkill):
@@ -17,20 +16,29 @@ class DagonSkill(CommonPlaySkill):
             self.settings["download_video"] = False
         if "audio_only" not in self.settings:
             self.settings["audio_only"] = False
-
+        if "mp3_audio" not in self.settings:
+            self.settings["mp3_audio"] = True
         self.supported_media = [CPSMatchType.GENERIC,
                                 CPSMatchType.AUDIOBOOK,
                                 CPSMatchType.VISUAL_STORY,
                                 CPSMatchType.VIDEO]
+        self.default_bg = join(dirname(__file__), "ui", "bg.png")
+        self.default_image = join(dirname(__file__), "ui", "logo.png")
 
     def initialize(self):
         self.add_event('skill-dagon.jarbasskills.home',
                        self.handle_homescreen)
+        create_daemon(self._bootstrap)
+
+    def _bootstrap(self):
+        # bootstrap, so data is cached
+        url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
         try:
             if self.settings["download_audio"]:
-                self.get_audio_stream(download=True)
+                get_audio_stream(url, download=True,
+                                 to_mp3=self.settings["mp3_audio"])
             if self.settings["download_video"]:
-                self.get_video_stream(download=True)
+                get_video_stream(url, download=True)
         except:
             pass
 
@@ -116,15 +124,18 @@ class DagonSkill(CommonPlaySkill):
 
         if match is not None:
             return (phrase, match,
-                    {"media_type": media_type, "query": original})
+                    {"media_type": media_type, "query": original,
+                     "image": self.default_image, "background": self.default_bg,
+                     "stream": "https://www.youtube.com/watch?v=Gv1I0y6PHfg"})
         return None
 
     def CPS_start(self, phrase, data):
-        bg = join(dirname(__file__), "ui", "bg.png")
-        image = join(dirname(__file__), "ui", "logo.png")
-        url = "https://www.youtube.com/watch?v=Gv1I0y6PHfg"
+        bg = data.get("background") or self.default_bg
+        image = data.get("image") or self.default_image
+        url = data.get("stream")
         if self.gui.connected and not self.settings["audio_only"]:
-            url = self.get_video_stream(url, self.settings["download_video"])
+            url = get_video_stream(url,
+                                   download=self.settings["download_video"])
             self.CPS_send_status(uri=url,
                                  image=image,
                                  background_image=bg,
@@ -132,7 +143,9 @@ class DagonSkill(CommonPlaySkill):
                                  status=CPSTrackStatus.PLAYING_GUI)
             self.gui.play_video(url, "Dagon , by H. P. Lovecraft")
         else:
-            url = self.get_audio_stream(url, self.settings["download_audio"])
+            url = get_audio_stream(url,
+                                   download=self.settings["download_audio"],
+                                   to_mp3=self.settings["mp3_audio"])
             self.audioservice.play(url, utterance=self.play_service_string)
             self.CPS_send_status(uri=url,
                                  image=image,
@@ -142,44 +155,6 @@ class DagonSkill(CommonPlaySkill):
 
     def stop(self):
         self.gui.release()
-
-    # youtube handling
-    @staticmethod
-    def get_audio_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                         download=False):
-        stream = pafy.new(url).getbestaudio()
-
-        # TODO check if https supported, if not download=True without
-        #  needing user changing settings.json
-        if download:
-            path = join(gettempdir(),
-                        url.split("watch?v=")[-1] + "." + stream.extension)
-            mp3 = join(gettempdir(), url.split("watch?v=")[-1] + ".mp3")
-
-            if not exists(mp3) and not exists(path):
-                stream.download(path)
-
-            if not exists(mp3):
-                # convert file to allow playback with simple audio backend
-                command = ["ffmpeg", "-n", "-i", path, "-acodec",
-                           "libmp3lame",
-                           "-ab", "128k", mp3]
-                subprocess.call(command)
-
-            return mp3
-        return stream.url
-
-    @staticmethod
-    def get_video_stream(url="https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                         download=False):
-        stream = pafy.new(url).streams[0]
-        if download:
-            path = join(gettempdir(),
-                        url.split("watch?v=")[-1] + "." + stream.extension)
-            if not exists(path):
-                stream.download(path)
-            return path
-        return stream.url
 
 
 def create_skill():
