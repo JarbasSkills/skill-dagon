@@ -42,51 +42,43 @@ class DagonSkill(BetterCommonPlaySkill):
         score = 0
 
         if media_type == CPSMatchType.AUDIOBOOK:
-            score += 0.1
+            score += 10
         elif media_type == CPSMatchType.VIDEO:
-            score += 0.15
+            score += 5
         elif media_type == CPSMatchType.VISUAL_STORY:
-            score += 0.3
+            score += 30
 
-        if self.voc_match(original, "reading"):
-            score += 0.1
-
-        if self.voc_match(original, "audio_theatre"):
-            score += 0.1
-
-        if self.voc_match(original, "video"):
-            score += 0.1
+        if self.voc_match(original, "reading") or\
+                self.voc_match(original, "audio_theatre"):
+            score += 10
 
         if self.voc_match(original, "lovecraft"):
-            score += 0.3
+            score += 30
             if self.voc_match(original, "video"):
-                score += 0.1
+                score += 10
 
         if self.voc_match(phrase, "dagon"):
-            score += 0.75
+            score += 70
 
-        score = score * 100
         if score >= CPSMatchConfidence.AVERAGE_LOW:
-            # let's differentiate GUI vs AUDIO
-            # TODO restore skill settings to allow override
-            if self.gui.connected:
-                return [
-                    {
-                        "match_confidence": min(100, score),
-                        "media_type": CPSMatchType.VISUAL_STORY,
-                        "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                        "playback": CPSPlayback.GUI
-                    }]
-            else:
-                return [
-                    {
-                        "match_confidence": min(100, score - 15),
-                        "media_type": CPSMatchType.AUDIOBOOK,
-                        "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                        "playback": CPSPlayback.AUDIO,
-                        "image": self.default_image,
-                        "bg_image": self.default_bg
-                    }]
+            # returning both GUI and AUDIO options, better-playback-skill
+            # will select which one to play, a check for self.gui.connected
+            # in here introduces latency and penalizes this skill
+            return [
+                {
+                    "match_confidence": min(100, score),
+                    "media_type": CPSMatchType.VISUAL_STORY,
+                    "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
+                    "playback": CPSPlayback.GUI
+                },
+                {   # bonus score for GUI playback
+                    "match_confidence": min(100, score - 1),
+                    "media_type": CPSMatchType.AUDIOBOOK,
+                    "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
+                    "playback": CPSPlayback.AUDIO,
+                    "image": self.default_image,
+                    "bg_image": self.default_bg
+                }]
         return None
 
 
