@@ -67,7 +67,7 @@ class DagonSkill(BetterCommonPlaySkill):
             # in here introduces latency and penalizes this skill
             return [
                 {
-                    "match_confidence": min(100, score - 20),
+                    "match_confidence": min(100, score),
                     "media_type": CPSMatchType.VISUAL_STORY,
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                     "playback": CPSPlayback.GUI,
