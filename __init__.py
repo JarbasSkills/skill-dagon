@@ -1,7 +1,6 @@
 from ovos_utils import create_daemon
 from ovos_utils.skills.templates.common_play import BetterCommonPlaySkill
 from ovos_utils.playback import CPSMatchType, CPSPlayback, CPSMatchConfidence
-from pyvod.utils import get_audio_stream, get_video_stream
 import re
 from os.path import join, dirname
 
@@ -15,7 +14,9 @@ class DagonSkill(BetterCommonPlaySkill):
                                 CPSMatchType.VISUAL_STORY,
                                 CPSMatchType.VIDEO]
         self.default_bg = join(dirname(__file__), "ui", "bg.png")
-        self.default_image = join(dirname(__file__), "ui", "logo.png")
+        self.default_image = join(dirname(__file__), "ui", "dagon.png")
+        self.skill_logo = join(dirname(__file__), "ui", "logo.png")
+        self.skill_icon = join(dirname(__file__), "ui", "icon.png")
 
     # better common play
     def CPS_search(self, phrase, media_type):
@@ -66,10 +67,17 @@ class DagonSkill(BetterCommonPlaySkill):
             # in here introduces latency and penalizes this skill
             return [
                 {
-                    "match_confidence": min(100, score),
+                    "match_confidence": min(100, score - 20),
                     "media_type": CPSMatchType.VISUAL_STORY,
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                    "playback": CPSPlayback.GUI
+                    "playback": CPSPlayback.GUI,
+                    "image": self.default_image,
+                    "bg_image": self.default_bg,
+                    "skill_icon": self.skill_icon,
+                    "skill_logo": self.skill_logo,
+                    "title": "DAGON",
+                    "author": "H. P. Lovecraft",
+                    'length': 1135 * 1000
                 },
                 {   # bonus score for GUI playback
                     "match_confidence": min(100, score - 1),
@@ -77,10 +85,18 @@ class DagonSkill(BetterCommonPlaySkill):
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
                     "playback": CPSPlayback.AUDIO,
                     "image": self.default_image,
-                    "bg_image": self.default_bg
+                    "bg_image": self.default_bg,
+                    "skill_icon": self.skill_icon,
+                    "skill_logo": self.skill_logo,
+                    "title": "DAGON (audio)",
+                    "author": "H. P. Lovecraft",
+                    'length': 1135 * 1000,
+                    "album": "read by Wayne June"
                 }]
         return None
 
 
 def create_skill():
     return DagonSkill()
+
+
