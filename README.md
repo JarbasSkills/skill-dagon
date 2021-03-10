@@ -14,7 +14,7 @@ An illustrated reading of 'Dagon' by H.P. Lovecraft. Read by Mike Bennett, illus
 
 Illustrated by Christopher Edwin Steininger
 
-
+![](./gui2.gif)
 ![](./gui.gif)
 
 ## Examples 
