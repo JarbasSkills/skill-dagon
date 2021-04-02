@@ -1,6 +1,7 @@
 from ovos_utils import create_daemon
-from ovos_utils.skills.templates.common_play import BetterCommonPlaySkill
-from ovos_utils.playback import CPSMatchType, CPSPlayback, CPSMatchConfidence
+from ovos_workshop.skills.common_play import BetterCommonPlaySkill
+from ovos_workshop.frameworks.cps import CPSMatchType, CPSPlayback, \
+    CPSMatchConfidence
 import re
 from os.path import join, dirname
 
