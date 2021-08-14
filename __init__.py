@@ -33,7 +33,7 @@ class DagonSkill(OVOSCommonPlaybackSkill):
                 "match_confidence": CommonPlayMatchConfidence.HIGH,
                 "media_type":  CPSMatchType.MUSIC,
                 "uri": "https://audioservice.or.gui.will.play.this",
-                "playback": CommonPlayPlaybackType.GUI,
+                "playback": CommonPlayPlaybackType.VIDEO,
                 "image": "http://optional.audioservice.jpg",
                 "bg_image": "http://optional.audioservice.background.jpg"
             }
@@ -63,7 +63,7 @@ class DagonSkill(OVOSCommonPlaybackSkill):
             score += 70
 
         if score >= CommonPlayMatchConfidence.AVERAGE_LOW:
-            # returning both GUI and AUDIO options, better-playback-skill
+            # returning both VIDEO and AUDIO options, better-playback-skill
             # will select which one to play, a check for self.gui.connected
             # in here introduces latency and penalizes this skill
             return [
@@ -71,7 +71,7 @@ class DagonSkill(OVOSCommonPlaybackSkill):
                     "match_confidence": min(100, score),
                     "media_type": CommonPlayMediaType.VISUAL_STORY,
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                    "playback": CommonPlayPlaybackType.GUI,
+                    "playback": CommonPlayPlaybackType.VIDEO,
                     "image": self.default_image,
                     "bg_image": self.default_bg,
                     "skill_icon": self.skill_icon,
@@ -80,7 +80,7 @@ class DagonSkill(OVOSCommonPlaybackSkill):
                     "author": "H. P. Lovecraft",
                     'length': 1135 * 1000
                 },
-                {   # bonus score for GUI playback
+                {   # bonus score for VIDEO playback
                     "match_confidence": min(100, score - 1),
                     "media_type": CommonPlayMediaType.AUDIOBOOK,
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
