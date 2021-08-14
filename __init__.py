@@ -1,7 +1,7 @@
 from ovos_utils import create_daemon
 from ovos_workshop.skills.common_play import OVOSCommonPlaybackSkill
-from ovos_workshop.frameworks.playback import CPSMatchType, CPSPlayback, \
-    CPSMatchConfidence
+from ovos_workshop.frameworks.playback import CommonPlayMediaType, CommonPlayPlaybackType, \
+    CommonPlayMatchConfidence
 import re
 from os.path import join, dirname
 
@@ -10,10 +10,10 @@ class DagonSkill(OVOSCommonPlaybackSkill):
 
     def __init__(self):
         super().__init__("Dagon")
-        self.supported_media = [CPSMatchType.GENERIC,
-                                CPSMatchType.AUDIOBOOK,
-                                CPSMatchType.VISUAL_STORY,
-                                CPSMatchType.VIDEO]
+        self.supported_media = [CommonPlayMediaType.GENERIC,
+                                CommonPlayMediaType.AUDIOBOOK,
+                                CommonPlayMediaType.VISUAL_STORY,
+                                CommonPlayMediaType.VIDEO]
         self.default_bg = join(dirname(__file__), "ui", "bg.png")
         self.default_image = join(dirname(__file__), "ui", "dagon.png")
         self.skill_logo = join(dirname(__file__), "ui", "logo.png")
@@ -25,15 +25,15 @@ class DagonSkill(OVOSCommonPlaybackSkill):
 
         Arguments:
             phrase (str): User phrase uttered after "Play", e.g. "some music"
-            media_type (CPSMatchType): requested CPSMatchType to search for
+            media_type (CommonPlayMediaType): requested CPSMatchType to search for
 
         Returns:
             search_results (list): list of dictionaries with result entries
             {
-                "match_confidence": CPSMatchConfidence.HIGH,
+                "match_confidence": CommonPlayMatchConfidence.HIGH,
                 "media_type":  CPSMatchType.MUSIC,
                 "uri": "https://audioservice.or.gui.will.play.this",
-                "playback": CPSPlayback.GUI,
+                "playback": CommonPlayPlaybackType.GUI,
                 "image": "http://optional.audioservice.jpg",
                 "bg_image": "http://optional.audioservice.background.jpg"
             }
@@ -43,11 +43,11 @@ class DagonSkill(OVOSCommonPlaybackSkill):
         original = phrase
         score = 0
 
-        if media_type == CPSMatchType.AUDIOBOOK:
+        if media_type == CommonPlayMediaType.AUDIOBOOK:
             score += 10
-        elif media_type == CPSMatchType.VIDEO:
+        elif media_type == CommonPlayMediaType.VIDEO:
             score += 5
-        elif media_type == CPSMatchType.VISUAL_STORY:
+        elif media_type == CommonPlayMediaType.VISUAL_STORY:
             score += 30
 
         if self.voc_match(original, "reading") or\
@@ -62,16 +62,16 @@ class DagonSkill(OVOSCommonPlaybackSkill):
         if self.voc_match(phrase, "dagon"):
             score += 70
 
-        if score >= CPSMatchConfidence.AVERAGE_LOW:
+        if score >= CommonPlayMatchConfidence.AVERAGE_LOW:
             # returning both GUI and AUDIO options, better-playback-skill
             # will select which one to play, a check for self.gui.connected
             # in here introduces latency and penalizes this skill
             return [
                 {
                     "match_confidence": min(100, score),
-                    "media_type": CPSMatchType.VISUAL_STORY,
+                    "media_type": CommonPlayMediaType.VISUAL_STORY,
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                    "playback": CPSPlayback.GUI,
+                    "playback": CommonPlayPlaybackType.GUI,
                     "image": self.default_image,
                     "bg_image": self.default_bg,
                     "skill_icon": self.skill_icon,
@@ -82,9 +82,9 @@ class DagonSkill(OVOSCommonPlaybackSkill):
                 },
                 {   # bonus score for GUI playback
                     "match_confidence": min(100, score - 1),
-                    "media_type": CPSMatchType.AUDIOBOOK,
+                    "media_type": CommonPlayMediaType.AUDIOBOOK,
                     "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                    "playback": CPSPlayback.AUDIO,
+                    "playback": CommonPlayPlaybackType.AUDIO,
                     "image": self.default_image,
                     "bg_image": self.default_bg,
                     "skill_icon": self.skill_icon,
