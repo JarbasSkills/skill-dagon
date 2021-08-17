@@ -79,20 +79,6 @@ class DagonSkill(OVOSCommonPlaybackSkill):
                     "title": "DAGON",
                     "author": "H. P. Lovecraft",
                     'length': 1135 * 1000
-                },
-                {   # bonus score for VIDEO playback
-                    "match_confidence": min(100, score - 1),
-                    "media_type": CommonPlayMediaType.AUDIOBOOK,
-                    "uri": "https://www.youtube.com/watch?v=Gv1I0y6PHfg",
-                    "playback": CommonPlayPlaybackType.AUDIO,
-                    "image": self.default_image,
-                    "bg_image": self.default_bg,
-                    "skill_icon": self.skill_icon,
-                    "skill_logo": self.skill_logo,
-                    "title": "DAGON (audio)",
-                    "author": "H. P. Lovecraft",
-                    'length': 1135 * 1000,
-                    "album": "read by Wayne June"
                 }]
         return None
 
