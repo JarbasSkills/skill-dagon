@@ -1,10 +1,10 @@
 {
-  "name": "Dagon, A Lovecraft Story Skill",
-  "skillname": "skill-dagon",
+  "name": "Lovecraft Comics Skill",
+  "skillname": "skill-lovecraft-comics",
   "authorname": "JarbasSkills",
   "foldername": "",
-  "url": "https://github.com/JarbasSkills/skill-dagon",
-  "branch": "v0.4.0",
+  "url": "https://github.com/JarbasSkills/skill-lovecraft-comics",
+  "branch": "dev",
   "desktopFile": true,
   "warning": "",
   "systemDeps": false,
@@ -16,9 +16,6 @@
     "ia64"
   ],
   "examples": [
-    "play dagon by lovecraft",
-    "play dagon audiobook",
-    "read dagon",
-    "play dagon video"
+    "play lovecraft comics"
   ]
 }

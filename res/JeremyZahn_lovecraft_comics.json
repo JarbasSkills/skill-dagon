@@ -1,0 +1,30 @@
+{
+    "Rats In The Walls": {
+        "uri": "youtube//https://www.youtube.com/watch?v=o0eDis-w-90",
+        "title": "Rats In The Walls (Motion Comic)",
+        "image": "https://img.youtube.com/vi/o0eDis-w-90/hqdefault.jpg",
+        "album": "Lovecraft Motion Comics by Jeremy Zahn",
+        "author": "H. P. Lovecraft"
+    },
+    "Dagon": {
+        "uri": "youtube//https://www.youtube.com/watch?v=Gv1I0y6PHfg",
+        "title": "Dagon (Motion Comic)",
+        "image": "https://img.youtube.com/vi/Gv1I0y6PHfg/hqdefault.jpg",
+        "album": "Lovecraft Motion Comics by Jeremy Zahn",
+        "author": "H. P. Lovecraft"
+    },
+    "The Call Of Cthulhu": {
+        "uri": "youtube//https://www.youtube.com/watch?v=7RV6htNDTwI",
+        "title": "The Call Of Cthulhu (Motion Comic)",
+        "image": "https://img.youtube.com/vi/7RV6htNDTwI/hqdefault.jpg",
+        "album": "Lovecraft Motion Comics by Jeremy Zahn",
+        "author": "H. P. Lovecraft"
+    },
+    "Cosmic Horror Mythos": {
+        "uri": "youtube//https://www.youtube.com/watch?v=Zk8y_2yovSA",
+        "title": "Cosmic Horror Mythos (Motion Comic)",
+        "image": "https://img.youtube.com/vi/Zk8y_2yovSA/hqdefault.jpg",
+        "album": "Lovecraft Motion Comics by Jeremy Zahn",
+        "author": "H. P. Lovecraft"
+    }
+}
