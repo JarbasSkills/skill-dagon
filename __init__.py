@@ -2,7 +2,8 @@ from os.path import join, dirname
 
 from json_database import JsonStorage
 from ovos_workshop.skills.common_play import OVOSCommonPlaybackSkill, \
-    MediaType, PlaybackType, ocp_search
+    ocp_search, ocp_featured_media
+from ovos_plugin_common_play import PlaybackType, MediaType
 
 
 class LovecraftComicsSkill(OVOSCommonPlaybackSkill):
@@ -103,6 +104,36 @@ class LovecraftComicsSkill(OVOSCommonPlaybackSkill):
             "author": "H. P. Lovecraft",
             "album": "Lovecraft Illustrated by Tanabe Gou"
         }]
+
+    @ocp_featured_media()
+    def featured_media(self):
+        pl = [
+            {
+                "media_type": MediaType.VISUAL_STORY,
+                "uri": entry["uri"],
+                "playback": PlaybackType.VIDEO,
+                "image": entry["image"],
+                "bg_image": self.default_bg,
+                "skill_icon": self.skill_icon,
+                "title": entry["title"],
+                "author": "H. P. Lovecraft",
+                "album": "Lovecraft Motion Comics by Jeremy Zahn"
+            } for title, entry in self.db.items()
+        ]
+        pl2 = [
+            {
+                "media_type": MediaType.VISUAL_STORY,
+                "uri": entry["uri"],
+                "playback": PlaybackType.VIDEO,
+                "image": entry["image"],
+                "bg_image": self.default_bg,
+                "skill_icon": self.skill_icon,
+                "title": entry["title"],
+                "author": "H. P. Lovecraft",
+                "album": "Lovecraft Illustrated by Tanabe Gou"
+            } for title, entry in self.db2.items()
+        ]
+        return pl + pl2
 
 
 def create_skill():
